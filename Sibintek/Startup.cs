@@ -2,11 +2,18 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Sibintek.Domain;
+using Sibintek.Domain.Repositories;
+using Sibintek.Domain.Repositories.Abstract;
+using Sibintek.Domain.Repositories.EntityFramework;
+using Sibintek.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +33,20 @@ namespace Sibintek
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Configuration.Bind("OptionProject", new Config());
+
+            services.AddTransient<IUserFile, EFUserFile>();
+            services.AddTransient<DataManager>();
+            services.AddDbContext<AppDbContext>(x => x.UseSqlServer(Config.ConectionString));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sibintek", Version = "v1" });
+            });
+            services.AddSpaStaticFiles(configuration =>
+            {
+                configuration.RootPath = "ClientApp/dist";
             });
         }
 
@@ -42,6 +58,7 @@ namespace Sibintek
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sibintek v1"));
+                app.UseSpaStaticFiles();
             }
 
             app.UseHttpsRedirection();
@@ -53,6 +70,16 @@ namespace Sibintek
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "ClientApp";
+
+                if (env.IsDevelopment())
+                {
+                    spa.UseAngularCliServer(npmScript: "start");
+                }
             });
         }
     }
