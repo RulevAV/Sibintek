@@ -17,7 +17,7 @@ namespace Sibintek.Migrations
             modelBuilder
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.0");
+                .HasAnnotation("ProductVersion", "5.0.9");
 
             modelBuilder.Entity("Sibintek.Domain.Entities.UserFile", b =>
                 {
@@ -29,8 +29,11 @@ namespace Sibintek.Migrations
                     b.Property<DateTime>("DateAdd")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("file")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("file")
+                        .HasColumnType("varbinary(max)");
 
                     b.Property<string>("hash")
                         .IsRequired()
@@ -42,14 +45,6 @@ namespace Sibintek.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserFiles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DateAdd = new DateTime(2022, 6, 9, 19, 0, 4, 130, DateTimeKind.Local).AddTicks(9553),
-                            hash = "asdfdsg"
-                        });
                 });
 #pragma warning restore 612, 618
         }

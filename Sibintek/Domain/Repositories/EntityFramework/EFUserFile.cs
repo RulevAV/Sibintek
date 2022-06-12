@@ -25,8 +25,23 @@ namespace Sibintek.Domain.Repositories.EntityFramework
 
         public void Delete(UserFile entity)
         {
-            _context.UserFiles.DefaultIfEmpty(entity);
+            _context.UserFiles.Remove(entity);
             _context.SaveChanges();
+        }
+
+        public bool existHash(string hash)
+        {
+            return _context.UserFiles.Where(u=>u.hash == hash).Any();
+        }
+
+        public UserFile userFile(int id)
+        {
+            return _context.UserFiles.FirstOrDefault(u => u.Id == id);
+        }
+
+        public int Count()
+        {
+            return _context.UserFiles.Count();
         }
     }
 }

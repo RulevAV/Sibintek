@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Sibintek.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,8 @@ namespace Sibintek.Controllers
         [HttpGet("GetUser")]
         public async Task<IActionResult> GetUser()
         {
-            var Name = User.Claims.Where(c => c.Type == ClaimTypes.Name).Select(c => c.Value).SingleOrDefault();
-            var UserName = Name.Split('\\')[1];
+            var UserName = UserAssistant.GetUser(User);
             return Ok(new { UserName });
         }
-
     }
 }

@@ -13,12 +13,6 @@ namespace Sibintek.Domain
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<UserFile>().HasData(new UserFile
-            {
-                Id =1,
-                hash="asdfdsg"
-            });
-           
         }
     }
 }

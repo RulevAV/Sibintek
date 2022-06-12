@@ -13,7 +13,10 @@ namespace Sibintek.Domain.Entities
         public string hash { get; set; }
 
         [Display(Name = "Файл")]
-        public string file { get; set; }
+        public byte[] file { get; set; }
+
+        [Display(Name = "Наименование")]
+        public string Name { get; set; }
 
         [Display(Name = "Отправитель")]
         public string sender { get; set; }
