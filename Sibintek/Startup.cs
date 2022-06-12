@@ -46,7 +46,7 @@ namespace Sibintek
             });
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                configuration.RootPath = "Sibintek-ui/dist";
             });
         }
 
@@ -74,7 +74,7 @@ namespace Sibintek
 
             app.UseSpa(spa =>
             {
-                spa.Options.SourcePath = "ClientApp";
+                spa.Options.SourcePath = "Sibintek-ui";
 
                 if (env.IsDevelopment())
                 {
