@@ -1,23 +1,15 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Sibintek.Domain;
 using Sibintek.Domain.Repositories;
 using Sibintek.Domain.Repositories.Abstract;
 using Sibintek.Domain.Repositories.EntityFramework;
 using Sibintek.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Sibintek
 {
@@ -37,7 +29,7 @@ namespace Sibintek
 
             services.AddTransient<IUserFile, EFUserFile>();
             services.AddTransient<DataManager>();
-            services.AddDbContext<AppDbContext>(x => x.UseSqlServer(Config.ConectionString));
+            services.AddTransient<SibintekContext>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

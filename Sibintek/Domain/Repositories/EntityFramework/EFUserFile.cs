@@ -1,6 +1,5 @@
 ﻿
 
-using Sibintek.Domain.Entities;
 using Sibintek.Domain.Repositories.Abstract;
 using System.Linq;
 
@@ -8,9 +7,9 @@ namespace Sibintek.Domain.Repositories.EntityFramework
 {
     public class EFUserFile : IUserFile
     {
-        private readonly AppDbContext _context;
+        private readonly SibintekContext _context;
 
-        public EFUserFile (AppDbContext context) => _context = context;
+        public EFUserFile (SibintekContext context) => _context = context;
 
         public IQueryable<UserFile> getAll()
         {
@@ -31,7 +30,7 @@ namespace Sibintek.Domain.Repositories.EntityFramework
 
         public bool existHash(string hash)
         {
-            return _context.UserFiles.Where(u=>u.hash == hash).Any();
+            return _context.UserFiles.Where(u=>u.Hash == hash).Any();
         }
 
         public UserFile userFile(int id)

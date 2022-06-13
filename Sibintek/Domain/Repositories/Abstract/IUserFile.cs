@@ -1,5 +1,4 @@
-﻿using Sibintek.Domain.Entities;
-using System.Linq;
+﻿using System.Linq;
 
 namespace Sibintek.Domain.Repositories.Abstract
 {

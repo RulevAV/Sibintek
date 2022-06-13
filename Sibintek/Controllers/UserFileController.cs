@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Sibintek.Common;
-using Sibintek.Domain.Entities;
+using Sibintek.Domain;
 using Sibintek.Domain.Repositories;
 using Sibintek.Model;
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Sibintek.Controllers
@@ -20,7 +18,7 @@ namespace Sibintek.Controllers
     public class UserFileController : ControllerBase
     {
         private DataManager Context;
-       
+
         public UserFileController(DataManager _Context)
         {
             Context = _Context;
@@ -29,7 +27,7 @@ namespace Sibintek.Controllers
         [HttpPost("existHash")]
         public async Task<IActionResult> existHash(UserFile model)
         {
-            if (Context.UserFiles.existHash(model.hash))
+            if (Context.UserFiles.existHash(model.Hash))
                 return Ok(new { message = "Данный файл уже загружен" });
             else
                 return Ok();
@@ -42,7 +40,7 @@ namespace Sibintek.Controllers
             var provider = new FileExtensionContentTypeProvider();
             string contentType;
 
-            if (userFile==null)
+            if (userFile == null)
             {
                 return StatusCode(409, $"Файл не найден");
             }
@@ -52,27 +50,27 @@ namespace Sibintek.Controllers
                 contentType = "application/octet-stream";
             }
 
-            return File(userFile.file, contentType, userFile.Name);
+            return File(userFile.File, contentType, userFile.Name);
         }
 
         [HttpGet()]
-        public async Task<IActionResult> get(int page=1)
+        public async Task<IActionResult> get(int page = 1)
         {
             var size = Context.UserFiles.Count();
             var pageSize = 10;
             var skip = pageSize * (page - 1);
             var canPage = skip < size;
             var files = Context.UserFiles.getAll()
-                .Where(u=>u.sender== UserAssistant.GetUser(User))
-                .Select(u => new { u.Id, u.DateAdd, u.Name, u.sender })
-                .OrderBy(u=>u.Name)
+                .Where(u => u.Sender == UserAssistant.GetUser(User))
+                .Select(u => new { u.Id, u.DateAdd, u.Name, u.Sender })
+                .OrderBy(u => u.Name)
                 .Skip(skip)
                 .Take(pageSize)
                 .ToArray();
 
             var count = Math.Ceiling((decimal)size / pageSize);
 
-           return Ok(new { count, page , files }) ;
+            return Ok(new { count, page, files });
         }
 
         [HttpPost, DisableRequestSizeLimit]
@@ -80,7 +78,7 @@ namespace Sibintek.Controllers
         {
             try
             {
-                UserFile userFile = new UserFile { hash = model.hash };
+                UserFile userFile = new UserFile { Hash = model.hash };
                 byte[] Data = null;
 
                 using (var binaryReader = new BinaryReader(model.file.OpenReadStream()))
@@ -94,10 +92,10 @@ namespace Sibintek.Controllers
                 {
                     return StatusCode(409, $"Данный файл уже загружен");
                 }
-
-                userFile.file = Data;
+                userFile.DateAdd = DateTime.Now;
+                userFile.File = Data;
                 userFile.Name = model.file.FileName;
-                userFile.sender = UserAssistant.GetUser(User);
+                userFile.Sender = UserAssistant.GetUser(User);
                 Context.UserFiles.Create(userFile);
 
                 return Ok();
@@ -111,7 +109,7 @@ namespace Sibintek.Controllers
         [HttpDelete()]
         public async Task<IActionResult> HttpDelete(int id)
         {
-            Context.UserFiles.Delete(new UserFile() { Id=id});
+            Context.UserFiles.Delete(new UserFile() { Id = id });
             return Ok(new { message = "ok" });
         }
     }
